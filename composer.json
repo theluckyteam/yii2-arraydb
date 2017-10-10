@@ -1,0 +1,25 @@
+{
+    "name": "theluckyteam/yii2-arraydb",
+    "license": "BSD-3-Clause",
+    "authors": [
+        {
+            "name": "Lucky Team",
+            "email": "luckyteam@mironovgroup.ru"
+        },
+        {
+            "name": "Ivan Mironov",
+            "email": "mironorange@gmail.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": { "luckyteam\\yii\\arraydb\\": "src/luckyteam/yii2-arraydb/" }
+    },
+    "require": {
+        "yiisoft/yii2": "^2.0",
+        "luckyteam/arraydb-condition": "dev-master"
+    },
+    "require-dev": {
+        "codeception/codeception": "^2.3",
+        "phpunit/phpunit": "^5.7"
+    }
+}
