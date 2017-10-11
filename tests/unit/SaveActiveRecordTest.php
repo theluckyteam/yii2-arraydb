@@ -1,6 +1,7 @@
 <?php
 
 use app\models\Person;
+use app\models\Profession;
 use luckyteam\yii\arraydb\Connection;
 use luckyteam\yii\arraydb\Schema;
 use yii\db\ColumnSchema;
@@ -30,17 +31,15 @@ class SaveActiveRecordTest extends \Codeception\Test\Unit
         $schema = $db->getSchema();
         $tableName = Person::tableName();
 
-        $key = 2;
+        $key = Person::GARRY_POTTER_ID;
         $person = Person::findOne($key);
         $this->assertFalse($person->getIsNewRecord());
 
-        $attributeValue = 'Alex';
-        $person->first_name = $attributeValue;
+        $settingAttributeValue = 'Alex';
+        $person->first_name = $settingAttributeValue;
 
         $this->assertTrue($person->save());
-        $this->assertTrue($schema->data[$tableName][2]['first_name'] == $attributeValue);
-
-//        codecept_debug(VarDumper::dumpAsString($person, 3));
+        $this->assertTrue($schema->data[$tableName][Person::GARRY_POTTER_ID]['first_name'] == $settingAttributeValue);
     }
 
     /**
@@ -52,19 +51,17 @@ class SaveActiveRecordTest extends \Codeception\Test\Unit
         $schema = $db->getSchema();
         $tableName = Person::tableName();
 
-        $keys = [2, 3, 5];
-        $attributeValue = 'Alex';
-        Person::updateAll(['first_name' => $attributeValue] , ['id' => $keys]);
+        $keys = [Person::FREUD_SIGMUND_ID, Person::CHARLES_SPENCER_ID];
+        $settingAttributeValue = 'Alex';
+        Person::updateAll(['first_name' => $settingAttributeValue] , ['id' => $keys]);
 
         foreach ($schema->data[$tableName] as $key => $item) {
             if (in_array($item['id'], $keys)) {
-                $this->assertTrue($item['first_name'] == $attributeValue);
+                $this->assertTrue($item['first_name'] == $settingAttributeValue);
             } else {
-                $this->assertFalse($item['first_name'] == $attributeValue);
+                $this->assertFalse($item['first_name'] == $settingAttributeValue);
             }
         }
-
-//        codecept_debug(VarDumper::dumpAsString($schema->data[$tableName], 3));
     }
 
     /**
@@ -72,10 +69,6 @@ class SaveActiveRecordTest extends \Codeception\Test\Unit
      */
     public function testUpdatePrimaryKey()
     {
-        $db = Person::getDb();
-        $schema = $db->getSchema();
-        $tableName = Person::tableName();
-
         /** @var Person $model */
         $model = Person::findOne(6);
         $model->id = 16;
@@ -85,14 +78,6 @@ class SaveActiveRecordTest extends \Codeception\Test\Unit
         $actualModel = Person::findOne(16);
         $this->assertNotNull($actualModel);
         $this->assertTrue($actualModel->id == $model->id);
-
-//        codecept_debug(PHP_EOL);
-//        codecept_debug(
-//            VarDumper::dumpAsString($model->attributes, 3)
-//        );
-//        codecept_debug(
-//            VarDumper::dumpAsString($schema->data[$tableName], 3)
-//        );
     }
 
     /**
@@ -111,51 +96,96 @@ class SaveActiveRecordTest extends \Codeception\Test\Unit
                             'id' => 1,
                             'first_name' => 'Sherlock',
                             'last_name' => 'Holmes',
+                            'profession_id' => 2,
                         ],
-                        2 => [
-                            'id' => 2,
+                        Person::GARRY_POTTER_ID => [
+                            'id' => Person::GARRY_POTTER_ID,
                             'first_name' => 'Garry',
                             'last_name' => 'Potter',
+                            'profession_id' => 2,
                         ],
                         3 => [
                             'id' => 3,
                             'first_name' => 'Steven',
                             'last_name' => 'Rogers',
+                            'profession_id' => Profession::SUPERHERO_ID,
                         ],
-                        4 => [
-                            'id' => 4,
-                            'first_name' => 'Steven',
-                            'last_name' => 'Rogers',
+                        Person::FREUD_SIGMUND_ID => [
+                            'id' => Person::FREUD_SIGMUND_ID,
+                            'first_name' => 'Freud',
+                            'last_name' => 'Sigmund',
+                            'profession_id' => 4,
                         ],
                         5 => [
                             'id' => 5,
-                            'first_name' => 'Tony',
-                            'last_name' => 'Stark',
+                            'first_name' => 'Michelangelo',
+                            'last_name' => 'Buonarroti',
+                            'profession_id' => 3,
                         ],
-                        6 => [
-                            'id' => 6,
+                        Person::TONY_STARK_ID => [
+                            'id' => Person::TONY_STARK_ID,
                             'first_name' => 'Tony',
                             'last_name' => 'Stark',
+                            'profession_id' => Profession::SUPERHERO_ID,
                         ],
                         7 => [
                             'id' => 7,
                             'first_name' => 'Robert',
                             'last_name' => 'Bruce',
+                            'profession_id' => Profession::SUPERHERO_ID,
                         ],
-                        8 => [
-                            'id' => 8,
-                            'first_name' => 'Robert',
-                            'last_name' => 'Bruce',
+                        Person::CHARLES_SPENCER_ID => [
+                            'id' => Person::CHARLES_SPENCER_ID,
+                            'first_name' => 'Charles',
+                            'last_name' => 'Spencer',
+                            'profession_id' => 2,
                         ],
                         9 => [
                             'id' => 9,
                             'first_name' => 'Damian',
                             'last_name' => 'Wayne',
+                            'profession_id' => Profession::SUPERHERO_ID,
                         ],
                         10 => [
                             'id' => 10,
                             'first_name' => 'Peter',
                             'last_name' => 'Parker',
+                            'profession_id' => Profession::SUPERHERO_ID,
+                        ],
+                    ],
+                    'profession' => [
+                        Profession::SUPERHERO_ID => [
+                            'id' => Profession::SUPERHERO_ID,
+                            'name' => 'Superhero',
+                        ],
+                        2 => [
+                            'id' => 2,
+                            'name' => 'Movie hero',
+                        ],
+                        3 => [
+                            'id' => 3,
+                            'name' => 'Craftsman',
+                        ],
+                        4 => [
+                            'id' => 4,
+                            'name' => 'Psychologist',
+                        ],
+                    ],
+                    'movie' => [
+                        1 => [
+                            'id' => 1,
+                            'name' => 'Harry Potter and the Philosopher\'s Stone',
+                            'person_id' => Person::GARRY_POTTER_ID,
+                        ],
+                        2 => [
+                            'id' => 2,
+                            'name' => 'Harry Potter and the Goblet of Fire',
+                            'person_id' => Person::GARRY_POTTER_ID,
+                        ],
+                        3 => [
+                            'id' => 3,
+                            'name' => 'Iron Man',
+                            'person_id' => Person::TONY_STARK_ID,
                         ],
                     ],
                 ],
@@ -176,6 +206,44 @@ class SaveActiveRecordTest extends \Codeception\Test\Unit
                             [
                                 'class' => ColumnSchema::class,
                                 'name' => 'last_name',
+                            ],
+                            [
+                                'class' => ColumnSchema::class,
+                                'name' => 'profession_id',
+                            ],
+                        ],
+                    ],
+                    [
+                        'class' => TableSchema::class,
+                        'primaryKey' => ['id'],
+                        'name' => 'profession',
+                        'columns' => [
+                            [
+                                'class' => ColumnSchema::class,
+                                'name' => 'id',
+                            ],
+                            [
+                                'class' => ColumnSchema::class,
+                                'name' => 'name',
+                            ],
+                        ],
+                    ],
+                    [
+                        'class' => TableSchema::class,
+                        'primaryKey' => ['id'],
+                        'name' => 'movie',
+                        'columns' => [
+                            [
+                                'class' => ColumnSchema::class,
+                                'name' => 'id',
+                            ],
+                            [
+                                'class' => ColumnSchema::class,
+                                'name' => 'name',
+                            ],
+                            [
+                                'class' => ColumnSchema::class,
+                                'name' => 'person_id',
                             ],
                         ],
                     ],
